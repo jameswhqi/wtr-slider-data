@@ -18,7 +18,7 @@ If you don't want to use Nix, you can also install the dependencies manually. Se
 
 ### Running analyses
 
-We use [`targets`](https://docs.ropensci.org/targets/) to manage the pipelines of data processing, model building, and output generation. To build all the analyses, `cd` to the `data/` directory and run `./build.R`. This will take some time and computation, mostly due to sampling in Stan. The output data used for producing the figures in the paper will be written to `output/`, which you can mostly ignore.
+We use [`targets`](https://docs.ropensci.org/targets/) to manage the pipelines of data processing, model building, and output generation. To build all the analyses, `cd` to the `data/` directory and run `./build.R`. This will take some time and computation, mostly due to sampling in Stan. The built artifacts will be written to `store-expt{1,2,3}/`, which you can examine using methods described below. The output data used for producing the figures in the paper will be written to `output/`, which you can mostly ignore.
 
 To build or examine the results of individual targets, create an R terminal and run `library(targets)` and then `Sys.setenv(TAR_PROJECT = "expt1")`, which specifies that you are dealing with expt1 (similarly for expt2 and expt3). Then run `tar_manifest()` to see the list of available targets for that experiment. Run `tar_make(<target_name>)` to build an individual target and all its dependencies. Run `tar_read(<target_name>)` to read (as a variable) the result of an individual target (it must have been built).
 
@@ -47,7 +47,7 @@ There are 6 URL parameters you can add:
 
 Example: `https://experiments.evullab.org/lambda-slider/?otherName=Alice&init=0.5&selfOnTop=false`
 
-If the link no longer work, you can run `python3 -m http.server` and view it at `http://localhost:8000/`.
+If the link no longer works, you can run `python3 -m http.server` and view it at `http://localhost:8000/`.
 
 ### Embedding the standalone Lambda Slider in Qualtrics
 
