@@ -1,0 +1,9 @@
+expt1:
+  script: script-expt1.R
+  store: store-expt1
+expt2:
+  script: script-expt2.R
+  store: store-expt2
+expt3:
+  script: script-expt3.R
+  store: store-expt3
