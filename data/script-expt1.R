@@ -44,7 +44,7 @@ list2(
     )
   ),
   #
-  tar_target(lambdaTrAugment, getTrAugment(6, trLambdaSummary, trLambdaHDI)),
+  tar_target(lambdaTrAugment, getTrAugment(3, trLambdaSummary)),
   tar_target(lambdaTrPlot, getTrPlot(lambdaTrData, trLambdaSummary)),
   tar_target(lambdaTrOutput, getTrOutput(lambdaTrData, "tr-lambda"), format = "file"),
   tar_target(svoTrPlot, getTrPlot(svoTrData, trSvoSummary)),

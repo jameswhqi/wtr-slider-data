@@ -321,9 +321,9 @@ getConvergentOutput <- function(lambdaData, svoData) {
   file
 }
 
-getTrAugment <- function(n, fitSummary, fitHDI) {
-  postMean <- fitSummary["a", "mean"]
-  postLow <- fitHDI$CI_low[3]
-  postHigh <- fitHDI$CI_high[3]
-  augment(c(postMean, postLow, postHigh), n)
+getTrAugment <- function(n, fitSummary) {
+  postMedian <- fitSummary["a", "50%"]
+  postLow <- fitSummary["a", "2.5%"]
+  postHigh <- fitSummary["a", "97.5%"]
+  augment(c(postMedian, postLow, postHigh), n)
 }

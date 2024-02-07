@@ -18,11 +18,13 @@ If you don't want to use Nix, you can also install the dependencies manually. Se
 
 ### Running analyses
 
-We use [`targets`](https://docs.ropensci.org/targets/) to manage the pipelines of data processing, model building, and output generation. To build all the analyses, `cd` to the `data/` directory and run `./build.R`. This will take some time and computation, mostly due to sampling in Stan. The built artifacts will be written to `store-expt{1,2,3}/`, which you can examine using methods described below. The output data used for producing the figures in the paper will be written to `output/`, which you can mostly ignore.
+We use [`targets`](https://docs.ropensci.org/targets/) to manage the pipelines of data processing, model building, and output generation. To build all the analyses, `cd` to the `data/` directory and run `./build.R`. This will take some time and computation, mostly due to sampling in Stan. The built artifacts will be written to `store-expt{1,2,3}/`, which you can examine using methods described below. The output data used for producing the figures in the paper are created by targets with the suffix `Output` and will be written to `output/`, which you can mostly ignore.
 
 To build or examine the results of individual targets, create an R terminal and run `library(targets)` and then `Sys.setenv(TAR_PROJECT = "expt1")`, which specifies that you are dealing with expt1 (similarly for expt2 and expt3). Then run `tar_manifest()` to see the list of available targets for that experiment. Run `tar_make(<target_name>)` to build an individual target and all its dependencies. Run `tar_read(<target_name>)` to read (as a variable) the result of an individual target (it must have been built).
 
 `data/script-expt{1,2,3}.R` define the list of targets in each experiment. `tar_target(<target_name>, ...)` creates individual targets, while other top-level functions such as `tar_stanFit()` are defined in `data/R/common.R` and create multiple targets at once.
+
+For any model fit with raw RStan (defined by `tar_stanFit()`), there is usually a target with the suffix `Fit` containing the fit object and a target with the suffix `Summary` containing the summary of relevant parameters. For any model fit with `brms` (usually defined by `tar_target()` itself), the target has the suffix `Fit` containing the fit object, which, when printed, by default shows the posterior means instead of medians. To see the medians, use `print(<fit_object>, robust = T)`.
 
 ## Experiment interfaces
 

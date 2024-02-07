@@ -58,10 +58,10 @@ tar_stanFit <- function(name, data, suffix1 = "", suffix2 = "", summary = TRUE, 
       summary,
       tar_target_raw(paste0(fullNameChr, "Summary"), expr(
         getFitSummary(!!fitSym, !!parsSym)
-      )),
-      tar_target_raw(paste0(fullNameChr, "HDI"), expr(
-        getFitHDI(!!fitSym, !!parsSym)
       ))
+      # tar_target_raw(paste0(fullNameChr, "HDI"), expr(
+      #   getFitHDI(!!fitSym, !!parsSym)
+      # ))
     ),
     optional(
       bridge,
@@ -119,7 +119,7 @@ getFitSummary <- function(fit, pars) {
   summary(
     fit,
     pars = pars,
-    probs = c(.025, .975)
+    probs = c(.025, .5, .975)
   )$summary
 }
 

@@ -278,12 +278,12 @@ getIneqOutput <- function(ineqData, ineqSummary) {
   kappa <- summ |>
     filter(str_starts(par, "kappa")) |>
     mutate(id = str_extract(par, "[0-9]+")) |>
-    arrange(mean)
+    arrange(`50%`)
   # llhd <- summ |>
   #   filter(str_starts(par, "llhd")) |>
   #   mutate(id = str_extract(par, "[0-9]+"))
   # inner_join(kappa, llhd, by = "id", suffix = c(".k", ".l")) |>
-  #   select(id, mean.k, mean.l, `2.5%.k`, `97.5%.k`) |>
+  #   select(id, mean.k, `50%.k`, `50%.l`, `2.5%.k`, `97.5%.k`) |>
   #   print(n = Inf)
   lambda <- summ |>
     filter(str_starts(par, "lambda")) |>
@@ -292,7 +292,7 @@ getIneqOutput <- function(ineqData, ineqSummary) {
       target = str_extract(par, ",([0-9]+)", group = 1)
     )
 
-  write_file(formatPoints(kappa$mean, kappa$`2.5%`, kappa$`97.5%`), kappaFile)
+  write_file(formatPoints(kappa$`50%`, kappa$`2.5%`, kappa$`97.5%`), kappaFile)
 
   n <- c(5, 52, 73)
   rawFiles <- getOutputFile("ineq-raw-", n)
@@ -311,8 +311,8 @@ getIneqOutput <- function(ineqData, ineqSummary) {
     lambdas <- lambda |>
       filter(id == .env$id) |>
       arrange(target) |>
-      pull(mean)
-    k <- kappa$mean[n[i]]
+      pull(`50%`)
+    k <- kappa$`50%`[n[i]]
     df <- expand_grid(
       target = 1:6,
       slider = 1:3
