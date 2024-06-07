@@ -29,7 +29,7 @@ rawDataPath <- "../expt4/data/raw"
 
 dataFilePath <- "expt3.json"
 
-processPttData <- function(json) {
+processPttData <- function(demog, json) {
   if (any(str_detect(json$names, regex("arica", ignore_case = T)))) {
     stop("Arica detected in ", json$client$workerId)
   }
@@ -66,6 +66,10 @@ processPttData <- function(json) {
     sum()
 
   list(
+    demog = list(
+      age = demog$Age,
+      sex = demog$Sex
+    ),
     trials = trials,
     bonusSliderX = json$bonusSliderX,
     debrief = json$debrief,
@@ -75,7 +79,7 @@ processPttData <- function(json) {
 
 getDonations <- function(dataDir) {
   fileName <- "output/donations.csv"
-  list.files(dataDir) |>
+  list.files(dataDir, "prolific.*\\.json") |>
     map(\(fileName) {
       json <- read_json(file.path(dataDir, fileName))
       tibble(
@@ -282,9 +286,8 @@ getIneqOutput <- function(ineqData, ineqSummary) {
   # llhd <- summ |>
   #   filter(str_starts(par, "llhd")) |>
   #   mutate(id = str_extract(par, "[0-9]+"))
-  # inner_join(kappa, llhd, by = "id", suffix = c(".k", ".l")) |>
-  #   select(id, mean.k, `50%.k`, `50%.l`, `2.5%.k`, `97.5%.k`) |>
-  #   print(n = Inf)
+  # combined <- inner_join(kappa, llhd, by = "id", suffix = c(".k", ".l")) |>
+  #   select(id, mean.k, `50%.k`, `50%.l`, `2.5%.k`, `97.5%.k`)
   lambda <- summ |>
     filter(str_starts(par, "lambda")) |>
     mutate(
@@ -294,7 +297,7 @@ getIneqOutput <- function(ineqData, ineqSummary) {
 
   write_file(formatPoints(kappa$`50%`, kappa$`2.5%`, kappa$`97.5%`), kappaFile)
 
-  n <- c(5, 52, 73)
+  n <- c(3, 52, 73)
   rawFiles <- getOutputFile("ineq-raw-", n)
   predFiles <- getOutputFile("ineq-pred-", n)
 
@@ -357,3 +360,40 @@ getIneqPred <- function(slider, l, k) {
     }
   )
 }
+
+getIneqDonateStanData <- function(data, ineqSummary) {
+  donate <- data |>
+    imap(
+      \(ptt, i) tibble(id = as.character(i), donation = ptt$bonusSliderX * 2)
+    ) |>
+    list_rbind()
+
+  summ <- as_tibble(ineqSummary, rownames = "par")
+  kappa <- summ |>
+    filter(str_starts(par, "kappa")) |>
+    mutate(id = str_extract(par, "[0-9]+")) |>
+    select(id, `50%`) |>
+    rename(kappa = `50%`)
+
+  df <- inner_join(donate, kappa)
+
+  list(
+    N = nrow(df),
+    x = list_transpose(list(abs(df$donation - 1), df$kappa)),
+    muPriorMean = c(.5, .5),
+    muPriorSd = c(.5, .5),
+    sigmaPriorLogMean = c(log(.5), log(.5))
+  )
+}
+
+getIneqDonatePred <- function(l, k) {
+  if (l + 2 * k - 1 < 0) {
+    0
+  } else if (l - 2 * k - 1 < 0) {
+    .5
+  } else {
+    1
+  }
+}
+
+corIneqDonatePars <- c("mu", "sigma", "a")

@@ -12,6 +12,7 @@ list2(
   },
   #
   tar_target(data, getData(dataFile)),
+  tar_target(demog, getDemog(data)),
   #
   tar_target(lambdaData, getLambdaData(data)),
   tar_target(lambdaTrData, getLambdaTrData(lambdaData)),

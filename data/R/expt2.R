@@ -2,7 +2,7 @@ rawDataPath <- "../expt3/data/1"
 
 dataFilePath <- "expt2.json"
 
-processPttData <- function(json) {
+processPttData <- function(demog, json) {
   trials <- json$trials |>
     imap(
       \(trial, i) trial |>
@@ -30,6 +30,10 @@ processPttData <- function(json) {
     sum()
 
   list(
+    demog = list(
+      age = demog$Age,
+      sex = demog$Sex
+    ),
     targetRanks = match(json$names, json$orderedNames),
     trials = trials,
     times = json$times,

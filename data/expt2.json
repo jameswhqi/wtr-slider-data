@@ -1,5 +1,9 @@
 [
   {
+    "demog": {
+      "age": "52",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       3,
@@ -543,6 +547,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "28",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -1086,6 +1094,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "36",
+      "sex": "Male"
+    },
     "targetRanks": [
       2,
       1,
@@ -1629,6 +1641,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "29",
+      "sex": "Female"
+    },
     "targetRanks": [
       2,
       1,
@@ -2173,6 +2189,10 @@
     "passAttChecks": false
   },
   {
+    "demog": {
+      "age": "47",
+      "sex": "Female"
+    },
     "targetRanks": [
       1,
       2,
@@ -2716,6 +2736,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "39",
+      "sex": "Male"
+    },
     "targetRanks": [
       4,
       3,
@@ -3259,6 +3283,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "42",
+      "sex": "Female"
+    },
     "targetRanks": [
       7,
       4,
@@ -3803,6 +3831,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "52",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -4346,6 +4378,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "27",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -4889,6 +4925,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "22",
+      "sex": "Female"
+    },
     "targetRanks": [
       1,
       2,
@@ -5433,6 +5473,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "27",
+      "sex": "Male"
+    },
     "targetRanks": [
       4,
       3,
@@ -5976,6 +6020,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "47",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -6520,6 +6568,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "43",
+      "sex": "Male"
+    },
     "targetRanks": [
       2,
       1,
@@ -7063,6 +7115,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "40",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -7606,6 +7662,10 @@
     "passAttChecks": false
   },
   {
+    "demog": {
+      "age": "26",
+      "sex": "Female"
+    },
     "targetRanks": [
       1,
       2,
@@ -8150,6 +8210,10 @@
     "passAttChecks": false
   },
   {
+    "demog": {
+      "age": "30",
+      "sex": "Male"
+    },
     "targetRanks": [
       1,
       2,
@@ -8694,6 +8758,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "35",
+      "sex": "Female"
+    },
     "targetRanks": [
       1,
       4,
@@ -9238,6 +9306,10 @@
     "passAttChecks": false
   },
   {
+    "demog": {
+      "age": "51",
+      "sex": "Female"
+    },
     "targetRanks": [
       1,
       2,
@@ -9782,6 +9854,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "25",
+      "sex": "Male"
+    },
     "targetRanks": [
       2,
       3,
@@ -10325,6 +10401,10 @@
     "passAttChecks": true
   },
   {
+    "demog": {
+      "age": "31",
+      "sex": "Male"
+    },
     "targetRanks": [
       2,
       1,

@@ -12,6 +12,7 @@ list2(
   },
   #
   tar_target(data, getData(dataFile)),
+  tar_target(demog, getDemog(data)),
   # H_\lambda vs H_\chi
   tar_target(chiData, getChiData(data)),
   tar_stanModel(chi),

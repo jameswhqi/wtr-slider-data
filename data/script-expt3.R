@@ -13,6 +13,7 @@ list2(
   },
   #
   tar_target(data, getData(dataFile)),
+  tar_target(demog, getDemog(data)),
   # robustness of Lambda Slider (varcov = variance-covariance)
   tar_target(varcovData, getVarcovData(data)),
   tar_target(varcovDataSmall, slice_sample(varcovData, prop = .15)),
@@ -61,4 +62,6 @@ list2(
   tar_stanFit(ineq, getIneqStanData(ineqData)),
   tar_target(ineqPlot, getIneqPlot(ineqSummary)),
   tar_target(ineqOutput, getIneqOutput(ineqData, ineqSummary), format = "file"),
+  tar_stanModel(cor),
+  tar_stanFit(cor, getIneqDonateStanData(data, ineqSummary), suffix1 = "IneqDonate"),
 )

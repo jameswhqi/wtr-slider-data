@@ -104,8 +104,15 @@ getCensoredIndices <- function(columns, lb, ub) {
 }
 
 consolidateData <- function(dataDir) {
-  result <- list.files(dataDir) |>
-    map(\(fileName) read_json(file.path(dataDir, fileName)) |> processPttData())
+  demog <- read_csv(file.path(dataDir, "demographic.csv"))
+  result <- list.files(dataDir, "prolific.*\\.json") |>
+    map(\(fileName) {
+      demog_ <- demog |>
+        filter(`Participant id` == str_sub(fileName, 10, -6)) |>
+        arrange(`Total approvals`) |>
+        head(1)
+      processPttData(demog_, read_json(file.path(dataDir, fileName)))
+    })
   write_json(result, dataFilePath, pretty = 2, auto_unbox = T, digits = I(6))
   dataFilePath
 }
@@ -113,6 +120,11 @@ consolidateData <- function(dataDir) {
 getData <- function(dataFile) {
   read_json(dataFile) |>
     keep(\(p) p$passAttChecks)
+}
+
+getDemog <- function(data) {
+  map(data, \(p) as_tibble(p$demog)) |>
+    list_rbind()
 }
 
 getFitSummary <- function(fit, pars) {
