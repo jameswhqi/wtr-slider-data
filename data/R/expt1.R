@@ -147,7 +147,7 @@ getTrPlot <- function(data, fitSummary) {
 getLambdaDistFit <- function(lambdaData) {
   # get_prior(lambda | cens(censored) ~ mo(targetRank) + (mo(targetRank) | pttId), lambdaData)
 
-  eval(expr(brm(
+  brm(
     lambda | cens(censored) ~ mo(targetRank) + (mo(targetRank) | pttId),
     lambdaData |> mutate(targetRank = ordered(targetRank)),
     prior = c(
@@ -157,13 +157,13 @@ getLambdaDistFit <- function(lambdaData) {
       prior(lognormal(-1, 1), class = sd, group = pttId, coef = motargetRank),
       prior(lognormal(0, 1), class = sigma)
     )
-  )))
+  )
 }
 
 getSvoDistFit <- function(svoData) {
   # get_prior(svo | cens(censored) ~ mo(targetRank) + (mo(targetRank) | pttId), svoData)
 
-  eval(expr(brm(
+  brm(
     svo | cens(censored) ~ mo(targetRank) + (mo(targetRank) | pttId),
     svoData |> mutate(targetRank = ordered(targetRank)),
     prior = c(
@@ -176,11 +176,10 @@ getSvoDistFit <- function(svoData) {
     init = \() list2(
       Intercept = 40,
       sigma = 20,
-      bsp = 0,
       `sd_1[1]` = 20,
       `sd_1[2]` = 7,
     )
-  )))
+  )
 }
 
 getDistPlot <- function(data, fit, response) {

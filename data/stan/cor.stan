@@ -6,7 +6,7 @@ functions {
   matrix getChol(real a) {
     real A = sms(a);
 
-    matrix[6,6] chol = [
+    matrix[2,2] chol = [
       [1, 0],
       [a, A]
     ];

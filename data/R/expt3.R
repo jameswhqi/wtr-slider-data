@@ -113,6 +113,19 @@ getVarcovData <- function(data) {
     list_rbind()
 }
 
+getVarcovOneRhoBF <- function(varcovModel, varcovData) {
+  replicate(10, {
+    varcovDataSmall <- slice_sample(varcovData, prop = .1)
+    varcovSmallStanData <- getVarcovStanData(varcovDataSmall)
+    varcovSmallFit <- sampling(varcovModel, varcovSmallStanData, iter = 5000)
+    varcovSmallBridge <- bridge_sampler(varcovSmallFit)
+    varcovOneRhoSmallStanData <- getVarcovStanData(varcovDataSmall, oneRho = T)
+    varcovOneRhoSmallFit <- sampling(varcovModel, varcovOneRhoSmallStanData, iter = 5000)
+    varcovOneRhoSmallBridge <- bridge_sampler(varcovOneRhoSmallFit)
+    bayes_factor(varcovSmallBridge, varcovOneRhoSmallBridge)$bf
+  })
+}
+
 getDistData <- function(data) {
   data |>
     imap(
@@ -122,10 +135,14 @@ getDistData <- function(data) {
         list_rbind() |>
         mutate(lambda = sliderX * 4 - 2) |>
         mutate(censored = getCensored(lambda, -2, 2)) |>
-        mutate(pttId = i) |>
-        select(target, slider, pttId, lambda, censored)
+        mutate(pttId = i, sex = ptt$demog$sex) |>
+        select(target, slider, pttId, sex, lambda, censored)
     ) |>
     list_rbind()
+}
+
+getDistSexData <- function(distData) {
+  distData |> filter(sex != "Prefer not to say")
 }
 
 getDonateData <- function(data) {
@@ -143,9 +160,13 @@ getDonateData <- function(data) {
           names_prefix = "lambda",
           values_from = lambda
         ) |>
-        mutate(pttId = i, donation = ptt$bonusSliderX * 2)
+        mutate(pttId = i, sex = ptt$demog$sex, donation = ptt$bonusSliderX * 2)
     ) |>
     list_rbind()
+}
+
+getDonateSexData <- function(donateData) {
+  donateData |> filter(sex != "Prefer not to say")
 }
 
 getTrPlots <- function(varcovData) {
@@ -229,6 +250,75 @@ getDistFit <- function(distData) {
   )
 }
 
+getDistSexFit <- function(distSexData) {
+  # get_prior(
+  #   lambda | cens(censored) ~ mo(target, "a") + sex + mo(target, "a"):sex + slider + (mo(target, "a") | pttId),
+  #   distSexData
+  # )
+  brm(
+    lambda | cens(censored) ~ mo(target, "a") + sex + mo(target, "a"):sex + slider + (mo(target, "a") | pttId),
+    distSexData,
+    prior = c(
+      prior(normal(0, 0.5), class = b, coef = motargeta),
+      prior(normal(0, 0.2), class = b, coef = motargeta:sexMale),
+      prior(normal(0, 0.5), class = b, coef = sexMale),
+      prior(normal(0, 1), class = b, coef = sliderSelfMore),
+      prior(normal(0, 1), class = b, coef = sliderTargetMore),
+      prior(normal(1, 2), class = Intercept),
+      prior(lognormal(0, 1), class = sd, group = pttId, coef = Intercept),
+      prior(lognormal(-1, 1), class = sd, group = pttId, coef = motargeta),
+      prior(lognormal(0, 1), class = sigma)
+    ),
+    iter = 5000,
+    save_pars = save_pars(all = T)
+  )
+}
+
+getDistSexNull1Fit <- function(distSexData) {
+  # get_prior(
+  #   lambda | cens(censored) ~ mo(target, "a") + sex + slider + (mo(target, "a") | pttId),
+  #   distSexData
+  # )
+  brm(
+    lambda | cens(censored) ~ mo(target, "a") + sex + slider + (mo(target, "a") | pttId),
+    distSexData,
+    prior = c(
+      prior(normal(0, 0.5), class = b, coef = motargeta),
+      prior(normal(0, 0.5), class = b, coef = sexMale),
+      prior(normal(0, 1), class = b, coef = sliderSelfMore),
+      prior(normal(0, 1), class = b, coef = sliderTargetMore),
+      prior(normal(1, 2), class = Intercept),
+      prior(lognormal(0, 1), class = sd, group = pttId, coef = Intercept),
+      prior(lognormal(-1, 1), class = sd, group = pttId, coef = motargeta),
+      prior(lognormal(0, 1), class = sigma)
+    ),
+    iter = 5000,
+    save_pars = save_pars(all = T)
+  )
+}
+
+getDistSexNull2Fit <- function(distSexData) {
+  # get_prior(
+  #   lambda | cens(censored) ~ mo(target, "a") + slider + (mo(target, "a") | pttId),
+  #   distSexData
+  # )
+  brm(
+    lambda | cens(censored) ~ mo(target, "a") + slider + (mo(target, "a") | pttId),
+    distSexData,
+    prior = c(
+      prior(normal(0, 0.5), class = b, coef = motargeta),
+      prior(normal(0, 1), class = b, coef = sliderSelfMore),
+      prior(normal(0, 1), class = b, coef = sliderTargetMore),
+      prior(normal(1, 2), class = Intercept),
+      prior(lognormal(0, 1), class = sd, group = pttId, coef = Intercept),
+      prior(lognormal(-1, 1), class = sd, group = pttId, coef = motargeta),
+      prior(lognormal(0, 1), class = sigma)
+    ),
+    iter = 5000,
+    save_pars = save_pars(all = T)
+  )
+}
+
 getIneqData <- function(data) {
   data |>
     imap(
@@ -297,7 +387,7 @@ getIneqOutput <- function(ineqData, ineqSummary) {
 
   write_file(formatPoints(kappa$`50%`, kappa$`2.5%`, kappa$`97.5%`), kappaFile)
 
-  n <- c(3, 52, 73)
+  n <- c(12, 52, 73)
   rawFiles <- getOutputFile("ineq-raw-", n)
   predFiles <- getOutputFile("ineq-pred-", n)
 
