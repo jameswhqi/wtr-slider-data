@@ -233,6 +233,20 @@ onecorPars <- c("mu", "sigma", "a")
 donatePars <- c("mu", "sigma", "corrMat[1,2]", "corrMat[1,3]")
 donateNullPars <- c("mu", "sigma", "corrMat[1,2]")
 
+getDonateOutput <- function(donateData) {
+  data <- donateData |>
+    filter(slider == "Balanced") |>
+    pivot_longer(
+      lambda1:lambda2,
+      names_to = "measurement",
+      names_prefix = "lambda",
+      values_to = "lambda"
+    )
+  file <- getOutputFile("donate")
+  write_file(formatPoints(data$lambda, data$donation), file)
+  file
+}
+
 getDistFit <- function(distData) {
   brm(
     lambda | cens(censored) ~ mo(target) + slider + (mo(target) | pttId),
@@ -390,6 +404,7 @@ getIneqOutput <- function(ineqData, ineqSummary) {
   n <- c(12, 52, 73)
   rawFiles <- getOutputFile("ineq-raw-", n)
   predFiles <- getOutputFile("ineq-pred-", n)
+  lambdaFiles <- getOutputFile("ineq-lambda-", n)
 
   for (i in 1:3) {
     id <- kappa$id[n[i]]
@@ -412,9 +427,15 @@ getIneqOutput <- function(ineqData, ineqSummary) {
     ) |>
       mutate(pred = map2_dbl(slider, target, \(s, t) getIneqPred(s, lambdas[t], k)))
     write_file(formatPoints(df$target, df$slider, df$pred), predFiles[i])
+
+    df <- tibble(
+      target = 1:6,
+      lambda = lambdas
+    )
+    write_file(formatPoints(df$target, df$lambda), lambdaFiles[i])
   }
 
-  c(kappaFile, rawFiles, predFiles)
+  c(kappaFile, rawFiles, predFiles, lambdaFiles)
 }
 
 getIneqPred <- function(slider, l, k) {

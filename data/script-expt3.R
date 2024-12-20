@@ -34,6 +34,7 @@ list2(
   tar_target(distSexBF2, bayes_factor(distSexNull1Fit, distSexNull2Fit)),
   # lambda vs. donation
   tar_target(donateData, getDonateData(data)),
+  tar_target(donateOutput, getDonateOutput(donateData), format = "file"),
   tar_stanModel(donate),
   #
   purrr::map(c("Balanced", "SelfMore", "TargetMore"), tar_donate),
