@@ -1,5 +1,7 @@
 # Data and code for the paper "An accurate and efficient measure of welfare tradeoff ratios"
 
+[![DOI](https://zenodo.org/badge/753300825.svg)](https://doi.org/10.5281/zenodo.14563524)
+
 ## Data and analyses
 
 Anonymized raw data files are `data/expt{1,2,3}.json` for the three experiments, respectively.
